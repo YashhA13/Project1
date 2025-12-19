@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Main • Pastel Todo</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgb(156, 199, 232); /* pastel blue */
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ---------- CREATE LIST BOX ---------- */
+    .create-box {
+      width: 320px;
+      height: 200px;
+      border-radius: 28px;
+      background: #f3e6c5;               /* warm cream */
+      color: #7c5c00;                    /* warm text */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid rgba(161, 98, 7, 0.15);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .create-box:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 30px 60px rgba(239, 239, 218, 0.664);
+      border-radius: 10%;
+      border-color: #eedba2;
+      background-color: #f5f2e5;
+    }
+
+    /* ---------- STICKY NOTE ---------- */
+    .note {
+      position: absolute;
+      top: 120px;
+      left: 120px;
+      width: 240px;
+      min-height: 260px;
+      resize: both;
+      overflow: auto;
+      background: #fef3c7;               /* pastel yellow paper */
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.18);
+      cursor: grab;
+    }
+
+    .note h3 {
+      margin: 0 0 10px 0;
+      font-size: 16px;
+      color: #92400e;
+    }
+
+    .note input {
+      width: 100%;
+      border: none;
+      outline: none;
+      background: transparent;
+      border-bottom: 1px dashed #a16207;
+      padding: 6px 0;
+      font-size: 14px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="create-box" onclick="createNote()">To do!</div>
+
+  <script>
+    function createNote() {
+      const note = document.createElement('div');
+      note.className = 'note';
+
+      note.innerHTML = `
+        <h3>My List</h3>
+        <input placeholder="Add item & press Enter" />
+        <ul></ul>
+      `;
+
+      const input = note.querySelector('input');
+      const ul = note.querySelector('ul');
+
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && input.value.trim()) {
+          const li = document.createElement('li');
+          li.textContent = '• ' + input.value;
+          ul.appendChild(li);
+          input.value = '';
+        }
+      });
+
+      makeDraggable(note);
+      document.body.appendChild(note);
+    }
+
+    function makeDraggable(el) {
+      let isDown = false;
+      let offsetX = 0;
+      let offsetY = 0;
+
+      el.addEventListener('mousedown', e => {
+        isDown = true;
+        offsetX = e.offsetX;
+        offsetY = e.offsetY;
+        el.style.cursor = 'grabbing';
+      });
+
+      document.addEventListener('mouseup', () => {
+        isDown = false;
+        el.style.cursor = 'grab';
+      });
+
+      document.addEventListener('mousemove', e => {
+        if (!isDown) return;
+        el.style.left = e.pageX - offsetX + 'px';
+        el.style.top = e.pageY - offsetY + 'px';
+      });
+    }
+  </script>
+
+</body>
+</html>
